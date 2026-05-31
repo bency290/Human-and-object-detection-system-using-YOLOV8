@@ -7,7 +7,7 @@ load_dotenv()
 
 class GroqAssistant:
     def __init__(self):
-        self.api_key = os.getenv("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")
+        self.api_key = os.getenv("")
         if not self.api_key:
             raise ValueError("Error: GROQ_API_KEY not found in .env file!")
         
