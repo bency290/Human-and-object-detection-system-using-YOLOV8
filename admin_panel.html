@@ -1,0 +1,174 @@
+{% extends "detection/base_admin.html" %}
+
+{% block admin_content %}
+<div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 animate-in fade-in slide-in-from-top-4 duration-700">
+    <div>
+        <h1 class="text-4xl font-black tracking-tighter text-white uppercase">
+            Control <span class="text-sky-500">Center</span>
+        </h1>
+        <p class="text-slate-400 font-medium mt-1">Monitor system activity and manage neural node access.</p>
+    </div>
+    
+    <div class="flex gap-4">
+        <a href="{% url 'export_logs' %}" class="flex items-center gap-2 px-6 py-3 bg-white text-slate-950 rounded-2xl font-black text-xs hover:bg-sky-400 transition-all shadow-lg shadow-white/5">
+            <i data-lucide="download" class="w-4 h-4"></i> EXPORT LOGS
+        </a>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <div class="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 hover:border-sky-500/30 transition-colors group">
+        <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">Network Operators</p>
+        <div class="flex items-end justify-between">
+            <p class="text-4xl font-black text-white">{{ users.count }}</p>
+            <i data-lucide="users" class="text-slate-700 group-hover:text-sky-500 transition-colors w-8 h-8"></i>
+        </div>
+    </div>
+    <div class="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-colors group">
+        <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">Stored Detections</p>
+        <div class="flex items-end justify-between">
+            <p class="text-4xl font-black text-emerald-500">{{ logs.count }}</p>
+            <i data-lucide="database" class="text-slate-700 group-hover:text-emerald-500 transition-colors w-8 h-8"></i>
+        </div>
+    </div>
+    <div class="p-8 rounded-[2.5rem] bg-sky-500/5 border border-sky-500/20 group">
+        <p class="text-[10px] font-black text-sky-500 uppercase tracking-[0.2em] mb-2">Engine Version</p>
+        <div class="flex items-end justify-between">
+            <p class="text-4xl font-black text-white">YOLO<span class="text-sky-500">v11</span></p>
+            <i data-lucide="zap" class="text-sky-500 w-8 h-8"></i>
+        </div>
+    </div>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl">
+            <div class="p-8 border-b border-white/5 flex items-center justify-between">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i data-lucide="fingerprint" class="text-sky-500 w-6 h-6"></i> Operator Directory
+                </h3>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-[10px] font-black uppercase tracking-widest text-slate-500 bg-white/5">
+                            <th class="px-8 py-4">Operator Info</th>
+                            <th class="px-4 py-4">Deployment</th>
+                            <th class="px-4 py-4">Status</th>
+                            <th class="px-8 py-4 text-right">Access Control</th>
+                        </tr>
+                    </thead>
+                    
+<tbody class="divide-y divide-white/5">
+    {% for u in users %}
+    <tr class="group hover:bg-white/[0.02] transition-colors">
+        <td class="px-8 py-5">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-500 font-black border border-sky-500/20">
+                    {{ u.username|first|upper }}
+                </div>
+                <div>
+                    <p class="font-bold text-white">{{ u.username }}</p>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-wider">{{ u.email }}</p>
+                </div>
+            </div>
+        </td>
+        <td class="px-4 py-5 text-xs font-bold text-slate-400">
+            {{ u.date_joined|date:"M d, Y" }}
+        </td>
+        <td class="px-4 py-5 text-xs font-bold">
+            {% if u.last_login %}
+                <span class="text-slate-300">{{ u.last_login|timesince }} ago</span>
+            {% else %}
+                <span class="text-slate-600 italic">Never logged in</span>
+            {% endif %}
+        </td>
+        <td class="px-4 py-5">
+            {% if u.is_active %}
+                <span class="flex items-center gap-1.5 text-emerald-500 text-[9px] font-black uppercase tracking-widest">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ONLINE
+                </span>
+            {% else %}
+                <span class="flex items-center gap-1.5 text-red-500 text-[9px] font-black uppercase tracking-widest">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> BANNED
+                </span>
+            {% endif %}
+        </td>
+        <td class="px-8 py-5 text-right">
+            <a href="{% url 'toggle_user' u.id %}" 
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border
+               {% if u.is_active %}
+               border-red-500/20 bg-red-500/5 text-red-500 hover:bg-red-500 hover:text-white
+               {% else %}
+               border-emerald-500/20 bg-emerald-500/5 text-emerald-500 hover:bg-emerald-500 hover:text-white
+               {% endif %}">
+                {% if u.is_active %}
+                    <i data-lucide="shield-off" class="w-3.5 h-3.5"></i> Deactivate
+                {% else %}
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Activate
+                {% endif %}
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="space-y-6">
+        <div class="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
+            <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i data-lucide="aperture" class="text-sky-500 w-6 h-6"></i> Visual Log
+            </h3>
+            
+            <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                {% for log in logs %}
+                <div class="group relative rounded-2xl overflow-hidden border border-white/10 bg-black">
+                    
+                    {% if log.is_support_shared and log.snapshot %}
+                        <img src="{{ log.snapshot.url }}" class="w-full h-32 object-cover opacity-60 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100" alt="Detection">
+                    {% else %}
+                        <div class="w-full h-32 bg-slate-900 flex items-center justify-center border-b border-white/10 opacity-80">
+                            <div class="text-center">
+                                <i data-lucide="lock" class="w-6 h-6 text-slate-500 mx-auto mb-1"></i>
+                                <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">User Private Data</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent p-4 flex flex-col justify-end pointer-events-none">
+                        <p class="text-white text-[10px] font-black uppercase tracking-widest">
+                            {{ log.person_count }} Object(s) Identified
+                        </p>
+                        <p class="text-sky-500 text-[9px] font-bold uppercase">{{ log.timestamp|date:"H:i:s" }} | {{ log.timestamp|date:"M d" }}</p>
+                        
+                        {% if log.user %}
+                            <p class="text-slate-400 text-[8px] uppercase mt-1">User: {{ log.user.username }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-20 border-2 border-dashed border-white/5 rounded-3xl">
+                    <i data-lucide="camera-off" class="w-10 h-10 text-slate-700 mx-auto mb-4"></i>
+                    <p class="text-slate-500 text-sm italic font-medium">No snapshots archived.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(14, 165, 233, 0.3); }
+</style>
+
+<script>
+    lucide.createIcons();
+</script>
+{% endblock %}

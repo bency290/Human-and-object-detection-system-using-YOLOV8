@@ -1,0 +1,176 @@
+{% extends 'detection/base.html' %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+
+<!-- Ambient Background -->
+<div class="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full
+        bg-[radial-gradient(#e2e8f0_1px,transparent_1px)]
+        dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)]
+        [background-size:40px_40px]
+        [mask-image:radial-gradient(ellipse_50%_50%_at_50%_0%,#000_70%,transparent_100%)]">
+    </div>
+</div>
+
+<div class="min-h-[80vh] flex items-center justify-center animate-in fade-in zoom-in duration-500">
+
+    <div class="w-full max-w-md">
+
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-black tracking-tighter uppercase text-slate-900 dark:text-white">
+                Create <span class="text-sky-500">Account</span>
+            </h1>
+            <p class="mt-2 text-sm font-medium text-slate-500 dark:text-slate-400">
+                Join the next generation of AI surveillance
+            </p>
+        </div>
+
+        <!-- Card -->
+        <div class="bg-white/70 dark:bg-slate-900/40 backdrop-blur-2xl
+                    p-10 rounded-[2.5rem]
+                    border border-slate-200 dark:border-white/5
+                    shadow-2xl dark:shadow-none">
+
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div id="alertBox"
+                        class="mb-6 px-5 py-4 rounded-2xl text-sm font-semibold
+                               border transition-all duration-700 ease-out
+                               animate-in fade-in slide-in-from-top-2
+                               {% if message.tags == 'success' %}
+                                    border-emerald-300 bg-emerald-50 text-emerald-700
+                               {% else %}
+                                    border-red-300 bg-red-50 text-red-700
+                               {% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Form -->
+            <form method="POST" class="space-y-6" novalidate>
+                {% csrf_token %}
+
+                <!-- Username -->
+                <div class="space-y-2">
+                    <label class="ml-2 block text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        Username
+                    </label>
+                    <input
+                        type="text"
+                        name="username"
+                        required
+                        autocomplete="username"
+                        placeholder="Choose a username"
+                        class="w-full px-6 py-4 rounded-2xl
+                               bg-slate-100 dark:bg-black/30
+                               border border-slate-200 dark:border-white/5
+                               text-slate-900 dark:text-white
+                               placeholder-slate-400
+                               focus:ring-2 focus:ring-sky-500/50
+                               outline-none transition-all shadow-inner">
+                </div>
+
+                <!-- Email -->
+                <div class="space-y-2">
+                    <label class="ml-2 block text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        Email
+                    </label>
+                    <input
+                        type="email"
+                        name="email"
+                        required
+                        autocomplete="email"
+                        placeholder="name@domain.com"
+                        class="w-full px-6 py-4 rounded-2xl
+                               bg-slate-100 dark:bg-black/30
+                               border border-slate-200 dark:border-white/5
+                               text-slate-900 dark:text-white
+                               placeholder-slate-400
+                               focus:ring-2 focus:ring-sky-500/50
+                               outline-none transition-all shadow-inner">
+                </div>
+
+                <!-- Password -->
+                <div class="space-y-2">
+                    <label class="ml-2 block text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        Password
+                    </label>
+                    <input
+                        type="password"
+                        name="password"
+                        required
+                        autocomplete="new-password"
+                        placeholder="••••••••"
+                        class="w-full px-6 py-4 rounded-2xl
+                               bg-slate-100 dark:bg-black/30
+                               border border-slate-200 dark:border-white/5
+                               text-slate-900 dark:text-white
+                               placeholder-slate-400
+                               focus:ring-2 focus:ring-sky-500/50
+                               outline-none transition-all shadow-inner">
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="space-y-2">
+                    <label class="ml-2 block text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        Confirm Password
+                    </label>
+                    <input
+                        type="password"
+                        name="confirm_password"
+                        required
+                        autocomplete="new-password"
+                        placeholder="••••••••"
+                        class="w-full px-6 py-4 rounded-2xl
+                               bg-slate-100 dark:bg-black/30
+                               border border-slate-200 dark:border-white/5
+                               text-slate-900 dark:text-white
+                               placeholder-slate-400
+                               focus:ring-2 focus:ring-sky-500/50
+                               outline-none transition-all shadow-inner">
+                </div>
+
+                <!-- Submit -->
+                <button type="submit"
+                    class="w-full py-5 rounded-2xl font-black
+                           bg-sky-500 text-white
+                           hover:bg-sky-600
+                           hover:shadow-[0_0_30px_rgba(14,165,233,0.3)]
+                           transition-all duration-300
+                           transform active:scale-95
+                           flex items-center justify-center gap-2">
+                    <i data-lucide="user-plus" class="w-5 h-5"></i>
+                    REGISTER
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="mt-8 pt-8 border-t border-slate-100 dark:border-white/5 text-center">
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-500">
+                    Already registered?
+                    <a href="{% url 'login_user' %}"
+                       class="ml-1 text-sky-500 hover:text-sky-400 transition-colors">
+                        Sign In
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Auto Fade Messages -->
+<script>
+    const alertBox = document.getElementById("alertBox");
+    if (alertBox) {
+        setTimeout(() => {
+            alertBox.classList.add("opacity-0", "translate-y-2");
+            setTimeout(() => alertBox.remove(), 800);
+        }, 5000);
+    }
+</script>
+
+{% endblock %}

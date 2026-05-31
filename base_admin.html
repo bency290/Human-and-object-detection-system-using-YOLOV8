@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control | YOLOVISION</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border-right: 1px solid rgba(255,255,255,0.05); }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 min-h-screen flex">
+
+    <aside class="w-72 glass flex-col hidden lg:flex sticky top-0 h-screen">
+        <div class="p-8">
+            <div class="flex items-center gap-3 mb-10">
+                <div class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
+                </div>
+                <span class="font-black tracking-tighter text-xl">ADMIN<span class="text-sky-500">CORE</span></span>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="{% url 'admin_panel' %}" class="flex items-center gap-3 p-4 rounded-2xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span class="text-sm font-bold">Monitor Overview</span>
+                </a>
+                <a href="{% url 'export_logs' %}" class="flex items-center gap-3 p-4 rounded-2xl hover:bg-white/5 transition-all text-slate-400 hover:text-white">
+                    <i data-lucide="file-down" class="w-5 h-5"></i>
+                    <span class="text-sm font-bold">Export Reports</span>
+                </a>
+                <a href="{% url 'home' %}" class="flex items-center gap-3 p-4 rounded-2xl hover:bg-white/5 transition-all text-slate-400 hover:text-white">
+                    <i data-lucide="external-link" class="w-5 h-5"></i>
+                    <span class="text-sm font-bold">View Main Site</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="mt-auto p-8 border-t border-white/5">
+            <a href="{% url 'logout' %}" class="flex items-center gap-3 text-red-400 hover:text-red-300 transition-colors font-bold text-sm">
+                <i data-lucide="log-out" class="w-5 h-5"></i> LOGOUT
+            </a>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col">
+        
+        <header class="h-20 border-b border-white/5 flex items-center justify-between px-10 bg-slate-950/50 backdrop-blur-md sticky top-0 z-40">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span class="text-[10px] font-black tracking-widest text-slate-500 uppercase">System Status: Nominal</span>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <div class="text-right hidden sm:block">
+                    <p class="text-xs font-black uppercase text-white">{{ user.username }}</p>
+                    <p class="text-[10px] text-sky-500 font-bold uppercase tracking-widest">Root Administrator</p>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg shadow-sky-500/20">
+                    {{ user.username|slice:":1"|upper }}
+                </div>
+            </div>
+        </header>
+
+        <main class="p-10">
+            {% block admin_content %}{% endblock %}
+        </main>
+    </div>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>

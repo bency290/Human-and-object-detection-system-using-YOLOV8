@@ -1,0 +1,35 @@
+{% extends "detection/base.html" %}
+{% block title %}Video Detection{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center">
+  <div class="bg-white dark:bg-slate-900 p-10 rounded-3xl shadow-xl max-w-xl w-full">
+
+    <h2 class="text-3xl font-black mb-6 text-center">
+      Video Human Detection
+    </h2>
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+      {{ form.video }}
+
+      <button type="submit"
+        class="w-full bg-sky-500 text-white py-3 rounded-xl font-bold hover:bg-sky-600">
+        Upload & Detect
+      </button>
+    </form>
+
+    {% if output %}
+      <div class="mt-8">
+        <h3 class="font-bold mb-2">Result</h3>
+        <video controls class="rounded-xl">
+          <source src="{{ output }}" type="video/mp4">
+        </video>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}
